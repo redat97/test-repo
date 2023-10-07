@@ -51,7 +51,7 @@ jobs:
 
     - name: Check branch protection
       env:
-        GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN_API }}
+        GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
       run: |
         protection=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}/branches/main/protection")
         message=$(echo $protection | jq -r .message)
@@ -64,3 +64,5 @@ jobs:
         fi
       if: always()
       shell: bash
+
+    
