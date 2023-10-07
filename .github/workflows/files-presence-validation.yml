@@ -14,7 +14,7 @@ jobs:
         if [[ "$repo_name" != "$lower_repo_name" ]]; then
           echo "The repository name '$repo_name' should contain only lowercase letters!" >&2
           exit 1
-        elif [[ "$repo_name" == *"__"* ]]; then
+        elif [[ "$repo_name" == *"_"* ]]; then
           echo "The repository name '$repo_name' should contain dashs ( - ) and not underscores ( _ )" >&2
           exit 1
         fi
