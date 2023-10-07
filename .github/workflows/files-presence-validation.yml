@@ -58,7 +58,7 @@ jobs:
 
         echo $protection | jq -r .message
         
-        if [[ "$message" == "Not Found" ]]; then
+        if [[ "$message" == "Branch not protected" ]]; then
           echo "Error: The main branch is not protected!" >&2
           exit 1
         fi
