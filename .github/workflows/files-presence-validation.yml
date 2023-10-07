@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check repository name
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         repo_name="${{ github.repository }}"
         lower_repo_name="${repo_name,,}"
@@ -17,6 +19,16 @@ jobs:
         elif [[ "$repo_name" == *"_"* ]]; then
           echo "The repository name '$repo_name' should contain dashs ( - ) and not underscores ( _ )" >&2
           exit 1
+        fi
+
+        repo_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}")
+        repo_visibility=$(echo $repo_info | jq -r .private)
+        
+        if [[ "$repo_visibility" == "true" ]]; then
+          echo "Error: Repository '${{ github.repository }}' is private!" >&2
+          exit 1
+        else
+          echo "Repository '${{ github.repository }}' is public."
         fi
       shell: bash
 
