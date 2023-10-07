@@ -1,6 +1,14 @@
-name: Check Documentation Files
+name: Reusable workflow to check organization standards
 
-on: [push, pull_request]
+on:
+  workflow_call:
+    inputs:
+      container-name:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
 
 jobs:
   validate-name:
@@ -64,5 +72,3 @@ jobs:
         fi
       if: always()
       shell: bash
-
-    
