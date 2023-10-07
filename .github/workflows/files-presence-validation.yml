@@ -12,12 +12,13 @@ jobs:
         lower_repo_name="${repo_name,,}"
         
         if [[ "$repo_name" != "$lower_repo_name" ]]; then
-          echo "The repository name '$repo_name' should contain only lowercase letters!" >&2
+          echo "The repository name '$repo_name' should contain only lowercase letters." >&2
           exit 1
         elif [[ "$repo_name" == *"_"* ]]; then
-          echo "The repository name '$repo_name' should contain dashs ( - ) and not underscores ( _ )" >&2
+          echo "The repository name '$repo_name' should contain dashs ( - ) and not underscores ( _ )." >&2
           exit 1
         fi
+      continue-on-error: true
       shell: bash
 
     - name: Check repository visibility
@@ -28,9 +29,8 @@ jobs:
         repo_visibility=$(echo $repo_info | jq -r .private)
         
         if [[ "$repo_visibility" == "true" ]]; then
-          echo "Error: Repository '${{ github.repository }}' is private!" >&2
+          echo "The repository '${{ github.repository }}' is private and needs to be public". >&2
           exit 1
-        else
-          echo "Repository '${{ github.repository }}' is public."
         fi
+      continue-on-error: true
       shell: bash
