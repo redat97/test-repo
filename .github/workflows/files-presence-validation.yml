@@ -18,7 +18,7 @@ jobs:
           echo "The repository name '$repo_name' should contain dashs ( - ) and not underscores ( _ )." >&2
           exit 1
         fi
-      continue-on-error: true
+      if: always()
       shell: bash
 
     - name: Check repository visibility
@@ -32,5 +32,5 @@ jobs:
           echo "The repository '${{ github.repository }}' is private and needs to be public". >&2
           exit 1
         fi
-      continue-on-error: true
+      if: always()
       shell: bash
