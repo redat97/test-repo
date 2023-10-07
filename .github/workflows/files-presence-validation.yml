@@ -55,6 +55,8 @@ jobs:
       run: |
         protection=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}/branches/main/protection")
         message=$(echo $protection | jq -r .message)
+
+        echo $protection | jq -r .message
         
         if [[ "$message" == "Not Found" ]]; then
           echo "Error: The main branch is not protected!" >&2
