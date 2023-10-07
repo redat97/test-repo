@@ -19,3 +19,18 @@ jobs:
           exit 1
         fi
       shell: bash
+
+    - name: Check repository visibility
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        repo_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}")
+        repo_visibility=$(echo $repo_info | jq -r .private)
+        
+        if [[ "$repo_visibility" == "true" ]]; then
+          echo "Error: Repository '${{ github.repository }}' is private!" >&2
+          exit 1
+        else
+          echo "Repository '${{ github.repository }}' is public."
+        fi
+      shell: bash
