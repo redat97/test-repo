@@ -34,3 +34,17 @@ jobs:
         fi
       if: always()
       shell: bash
+
+    - name: Check repository description
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        repo_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}")
+        repo_description=$(echo $repo_info | jq -r .description)
+        
+        if [[ "$repo_description" == "null" || -z "$repo_description" ]]; then
+          echo "The repository does not have a description, please add one." >&2
+          exit 1
+        fi
+      if: always()
+      shell: bash
