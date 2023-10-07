@@ -49,7 +49,7 @@ jobs:
       if: always()
       shell: bash
 
-    - name: Check if main branch is protected
+    - name: Check branch protection
       env:
         GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN_API }}
       run: |
