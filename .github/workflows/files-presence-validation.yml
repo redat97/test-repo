@@ -26,17 +26,12 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
-          const repoDetails = await github.repos.get({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
+          const { owner,repo } = context.repo;
+          const repoDetails = await github.rest.repos.get({ owner,repo })
 
-          // Check visibility
-          if (repoDetails.data.private) {
-            console.log("The repository is private and should be public");
+          if (repoDetails.data.private){
             core.setFailed("Repository is private!");
           }
-      if: always()
 
     - name: Check repository description
       env:
