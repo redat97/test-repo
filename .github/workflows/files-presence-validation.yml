@@ -66,12 +66,20 @@ jobs:
       with:
         script: |
           const { owner, repo } = context.repo;
-          const repoDetails = await github.rest.repos.get({ owner, repo });
+          let protection;
 
-          if (!protection || !protection.data) {
-          core.setFailed("Error: The main branch is not protected!");
-          }
+          try {
+            protection = await github.rest.repos.getBranchProtection({
+              owner,
+              repo,
+              branch: 'main'
+            });
           } catch (error) {
             core.setFailed(`An error occurred: ${error.message}`);
+            return;
           }
-      if: always()
+
+          if (!protection || !protection.data) {
+            core.setFailed("Error: The main branch is not protected!");
+          }
+    if: always()
