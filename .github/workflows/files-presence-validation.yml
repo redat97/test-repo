@@ -8,19 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check repository name
-      run: |
-        repo_name="${{ github.repository }}"
-        lower_repo_name="${repo_name,,}"
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { repo } = context.repo;
 
-        if [[ "$repo_name" != "$lower_repo_name" ]]; then
-          echo "The repository name '$repo_name' should contain only lowercase letters." >&2
-          exit 1
-        elif [[ "$repo_name" == *"_"* ]]; then
-          echo "The repository name '$repo_name' should contain dashs ( - ) and not underscores ( _ )." >&2
-          exit 1
-        fi
-      if: always()
-      shell: bash
+          if (repo.includes('_')) {
+            core.setFailed("Repository name contains underscores (_). Please remove them and use dashes (-) instead.");
+          }
 
     - name: Check repository visibility
       uses: actions/github-script@v5
@@ -30,35 +25,34 @@ jobs:
           const repoDetails = await github.rest.repos.get({ owner,repo })
 
           if (repoDetails.data.private){
-            core.setFailed("Repository is private!");
+            core.setFailed("Repository is private, please make it public");
           }
 
     - name: Check repository description
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        repo_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}")
-        repo_description=$(echo $repo_info | jq -r .description)
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { owner, repo } = context.repo;
+          const repoDetails = await github.rest.repos.get({ owner, repo });
 
-        if [[ "$repo_description" == "null" || -z "$repo_description" ]]; then
-          echo "The repository does not have a description, please add one." >&2
-          exit 1
-        fi
-      if: always()
-      shell: bash
+          if (!repoDetails.data.description) {
+            core.setFailed("The repository does not have a description, please add one.");
+          }
 
     - name: Check branch protection
-      env:
-        GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
-      run: |
-        protection=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}/branches/main/protection")
-        message=$(echo $protection | jq -r .message)
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { owner, repo } = context.repo;
 
-        echo $protection | jq -r .message
-
-        if [[ "$message" == "Branch not protected" ]]; then
-          echo "Error: The main branch is not protected!" >&2
-          exit 1
-        fi
-      if: always()
-      shell: bash
+          try {
+            await github.rest.repos.getBranchProtection({
+              owner,
+              repo,
+              branch: 'main'
+            });
+          } catch (error) {
+            if (error.status === 404) {
+              core.setFailed("Error: The main branch is not protected!");
+            }
+          }
