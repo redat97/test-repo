@@ -27,7 +27,8 @@ jobs:
           if (repoDetails.data.private){
             core.setFailed("Repository is private, please make it public");
           }
-      if: always()
+      if: always() # Run step even if previous steps fail.
+
 
 
     - name: Check repository description
@@ -64,7 +65,7 @@ jobs:
           if (!protection || !protection.data) {
             core.setFailed("Error: The main branch is not protected!");
           }
-      if: always()
+      if: always() # Run step even if previous steps fail.
 
     - name: Check repository license
       uses: actions/github-script@v5
@@ -76,4 +77,4 @@ jobs:
           if (!repoDetails.data.license) {
             core.setFailed("The repository does not have a license, please add one.");
           }
-      if: always()
+      if: always() # Run step even if previous steps fail.
