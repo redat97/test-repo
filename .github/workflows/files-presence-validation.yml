@@ -56,7 +56,19 @@ jobs:
             });
           } catch (error) {
             if (error.status === 404) {
-              core.setFailed("Error: The main branch is not protected!");
+              core.setFailed("Error: The main branch is not protected, ");
             }
+          }
+      if: always()
+
+    - name: Check repository license
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { owner, repo } = context.repo;
+          const repoDetails = await github.rest.repos.get({ owner, repo });
+
+          if (!repoDetails.data.license) {
+            core.setFailed("The repository does not have a license, please add one.");
           }
       if: always()
