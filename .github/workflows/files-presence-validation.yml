@@ -1,14 +1,7 @@
 name: Reusable workflow to check organization standards
 
-on:
-  workflow_call:
-    inputs:
-      container-name:
-        required: true
-        type: string
-      tag:
-        required: true
-        type: string
+on: [push, pull_request]
+
 
 jobs:
   validate-name:
