@@ -18,7 +18,7 @@ jobs:
       run: |
         repo_name="${{ github.repository }}"
         lower_repo_name="${repo_name,,}"
-        
+
         if [[ "$repo_name" != "$lower_repo_name" ]]; then
           echo "The repository name '$repo_name' should contain only lowercase letters." >&2
           exit 1
@@ -30,18 +30,20 @@ jobs:
       shell: bash
 
     - name: Check repository visibility
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        repo_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}")
-        repo_visibility=$(echo $repo_info | jq -r .private)
-        
-        if [[ "$repo_visibility" == "true" ]]; then
-          echo "The repository '${{ github.repository }}' is private and needs to be public". >&2
-          exit 1
-        fi
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const repoDetails = await github.repos.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+
+          // Check visibility
+          if (repoDetails.data.private) {
+            console.log("The repository is private and should be public");
+            core.setFailed("Repository is private!");
+          }
       if: always()
-      shell: bash
 
     - name: Check repository description
       env:
@@ -49,7 +51,7 @@ jobs:
       run: |
         repo_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -s "https://api.github.com/repos/${{ github.repository }}")
         repo_description=$(echo $repo_info | jq -r .description)
-        
+
         if [[ "$repo_description" == "null" || -z "$repo_description" ]]; then
           echo "The repository does not have a description, please add one." >&2
           exit 1
@@ -65,7 +67,7 @@ jobs:
         message=$(echo $protection | jq -r .message)
 
         echo $protection | jq -r .message
-        
+
         if [[ "$message" == "Branch not protected" ]]; then
           echo "Error: The main branch is not protected!" >&2
           exit 1
