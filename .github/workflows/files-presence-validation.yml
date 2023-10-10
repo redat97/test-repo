@@ -47,25 +47,6 @@ jobs:
       with:
         script: |
           const { owner, repo } = context.repo;
-
-          try {
-            await github.rest.repos.getBranchProtection({
-              owner,
-              repo,
-              branch: 'main'
-            });
-          } catch (error) {
-            if (error.status === 404) {
-              core.setFailed("Error: The main branch is not protected, ");
-            }
-          }
-      if: always()
-
-    - name: Check repository license
-      uses: actions/github-script@v5
-      with:
-        script: |
-          const { owner, repo } = context.repo;
           let protection;
 
           try {
@@ -82,4 +63,19 @@ jobs:
           if (!protection || !protection.data) {
             core.setFailed("Error: The main branch is not protected!");
           }
-    if: always()
+      if: always()
+
+    - name: Check repository license
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { owner, repo } = context.repo;
+          const repoDetails = await github.rest.repos.get({ owner, repo });
+
+          if (!protection || !protection.data) {
+          core.setFailed("Error: The main branch is not protected!");
+          }
+          } catch (error) {
+            core.setFailed(`An error occurred: ${error.message}`);
+          }
+      if: always()
