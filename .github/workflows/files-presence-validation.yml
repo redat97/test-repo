@@ -68,7 +68,10 @@ jobs:
           const { owner, repo } = context.repo;
           const repoDetails = await github.rest.repos.get({ owner, repo });
 
-          if (!repoDetails.data.license) {
-            core.setFailed("The repository does not have a license, please add one.");
+          if (!protection || !protection.data) {
+          core.setFailed("Error: The main branch is not protected!");
+          }
+          } catch (error) {
+            core.setFailed(`An error occurred: ${error.message}`);
           }
       if: always()
