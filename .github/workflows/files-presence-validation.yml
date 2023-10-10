@@ -27,6 +27,8 @@ jobs:
           if (repoDetails.data.private){
             core.setFailed("Repository is private, please make it public");
           }
+      if: always()
+
 
     - name: Check repository description
       uses: actions/github-script@v5
@@ -38,6 +40,7 @@ jobs:
           if (!repoDetails.data.description) {
             core.setFailed("The repository does not have a description, please add one.");
           }
+      if: always()
 
     - name: Check branch protection
       uses: actions/github-script@v5
@@ -56,3 +59,4 @@ jobs:
               core.setFailed("Error: The main branch is not protected!");
             }
           }
+      if: always()
