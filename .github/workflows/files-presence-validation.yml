@@ -64,3 +64,22 @@ jobs:
             return;
           }
       if: always() # Run step even if previous steps fail.
+
+    - name : Edit intake file
+      run: |
+          if [[ -f "intake.md" ]]; then
+            sed -i 's/\* \[ \] \[Configure repository to our own internal standards\]/\* \[x\] \[Configure repository to our own internal standards\]/' intake.md
+          else
+            echo "intake.md does not exist, this step will be skipped. Refer to rel-dev-doc repo for intake template"
+          fi
+
+    - name: Pushing the changes to PR
+      run: |
+        git diff
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        if [[ "$(git status --porcelain)" != "" ]]; then
+          git commit -m "Update intake.md based on checks"
+          git push
+        fi
