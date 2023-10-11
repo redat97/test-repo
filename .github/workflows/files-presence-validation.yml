@@ -82,7 +82,7 @@ jobs:
           const fs = require('fs');
           const { owner, repo } = context.repo;
           const path = "intake.md";
-          const message = "Update intake.md based on checks";
+          const message = "automatic update from workflow";
 
           // Read the modified intake.md content
           const modifiedContent = fs.readFileSync('./intake.md', 'utf-8');
