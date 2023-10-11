@@ -103,6 +103,6 @@ jobs:
           await github.rest.git.updateRef({
             owner,
             repo,
-            ref: context.ref,
+            ref: 'heads/' + context.ref.replace('refs/heads/', ''),
             sha: commit.data.sha
           });
