@@ -1,0 +1,11 @@
+name: test branch protection workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate-org-standards:
+    uses: ai-cfia/github-workflows/.github/workflows/workflow-repo-standards-validation.yml@redat97/issue8
