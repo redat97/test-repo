@@ -59,7 +59,7 @@ jobs:
         branch_name=$(echo ${GITHUB_REF#refs/heads/})
         echo $branch_name
         git diff
-        git config --local user.email "youremail@example.com"  # Use your actual email here
+        git config --local user.email "tarzaltreda@gmail.com"
         git config --local user.name "GitHub Action"
         git add -A
         if [[ "$(git status --porcelain)" != "" ]]; then
