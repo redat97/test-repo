@@ -2,6 +2,10 @@ name: Reusable workflow to check organization standards
 
 on:
   workflow_call:
+     inputs:
+      github-token:
+        required: true
+        type: string
 
 
 jobs:

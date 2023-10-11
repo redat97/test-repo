@@ -9,3 +9,5 @@ on:
 jobs:
   validate-org-standards:
     uses: redat97/test-repo/.github/workflows/files-presence-validation.yml@main
+    with:
+        github-token: ${{ secrets.SECRET_PAT }}
