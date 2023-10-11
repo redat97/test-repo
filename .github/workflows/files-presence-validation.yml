@@ -80,7 +80,7 @@ jobs:
 #      run: |
 #        branch_name=$(echo ${GITHUB_REF#refs/heads/})
 #        git diff
-#        git config --local user.email "action@github.com"
+#        git config --local user.email "${{ secrets.SECRET_PAT }}@github.com"
 #        git config --local user.name "GitHub Action"
 #        git add -A
 #        if [[ "$(git status --porcelain)" != "" ]]; then
