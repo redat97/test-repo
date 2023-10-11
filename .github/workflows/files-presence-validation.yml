@@ -5,7 +5,6 @@ on:
     paths-ignore:
       - '**.md'
 
-
 jobs:
   validate-name:
     if: github.actor != 'github-actions[bot]' && github.actor != 'github-actions'
