@@ -59,11 +59,14 @@ jobs:
       with:
         github-token: ${{ secrets.SECRET_PAT }}
         script: |
+          const fs = require('fs');
           const { owner, repo } = context.repo;
           const path = "intake.md";
           const message = "Update intake.md based on checks";
-          const content = await github.rest.repos.getContent({ owner, repo, path });
-          const newContent = Buffer.from(content.data.content, 'base64').toString() + "\nModified by GitHub Action!";
+
+          // Read the modified intake.md content
+          const modifiedContent = fs.readFileSync('./intake.md', 'utf-8');
+          const base64Content = Buffer.from(modifiedContent).toString('base64');
 
           // Create the blob for the new content
           const blob = await github.rest.git.createBlob({
