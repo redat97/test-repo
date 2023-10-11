@@ -4,7 +4,7 @@
    * [ ] Internal AI Project intake and criteria for internal AI products.
    * [ ] Product functionality explained in the Wiki.
    * [ ] [GitHub project created](https://github.com/orgs/ai-cfia/projects) for managing the product.
-   * [ ] [Configure repository to our own internal standards](https://github.com/ai-cfia/devops/blob/main/github-repository-creation-guide.md).
+   * [x] [Configure repository to our own internal standards](https://github.com/ai-cfia/devops/blob/main/github-repository-creation-guide.md).
    * [ ] Architecture documented with a diagram.
 
 * [ ] **Developer Documentation**
