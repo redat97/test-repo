@@ -16,14 +16,6 @@ jobs:
           if (repo.includes('_')) {
             core.setFailed("Repository name contains underscores (_). Please remove them and use dashes (-) instead.");
           }
-      uses: actions/github-script@v5
-      with:
-        script: |
-          const { repo } = context.repo;
-
-          if (repo.includes('_')) {
-            core.setFailed("Repository name contains underscores (_). Please remove them and use dashes (-) instead.");
-          }
 
     - name: Check repository visibility
       uses: actions/github-script@v5
@@ -38,29 +30,8 @@ jobs:
       if: always() # Run step even if previous steps fail.
 
 
-      uses: actions/github-script@v5
-      with:
-        script: |
-          const { owner,repo } = context.repo;
-          const repoDetails = await github.rest.repos.get({ owner,repo })
-
-          if (repoDetails.data.private){
-            core.setFailed("Repository is private, please make it public");
-          }
-      if: always() # Run step even if previous steps fail.
-
-
 
     - name: Check repository description
-      uses: actions/github-script@v5
-      with:
-        script: |
-          const { owner, repo } = context.repo;
-          const repoDetails = await github.rest.repos.get({ owner, repo });
-
-          if (!repoDetails.data.description) {
-            core.setFailed("The repository does not have a description, please add one.");
-          }
       uses: actions/github-script@v5
       with:
         script: |
