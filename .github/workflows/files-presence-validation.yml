@@ -76,14 +76,14 @@ jobs:
             echo "intake.md does not exist, this step will be skipped. Refer to rel-dev-doc repo for intake template"
           fi
 
-#    - name: Pushing the changes to PR
-#      run: |
-#        branch_name=$(echo ${GITHUB_REF#refs/heads/})
-#        git diff
-#        git config --local user.email "${{ secrets.SECRET_PAT }}@github.com"
-#        git config --local user.name "GitHub Action"
-#        git add -A
-#        if [[ "$(git status --porcelain)" != "" ]]; then
-#          git commit -m "Update intake.md based on checks"
-#          git push https://${{ secrets.SECRET_PAT }}@github.com/${{ github.repository }} HEAD:$branch_name
-#        fi
+    - name: Pushing the changes to PR
+      run: |
+        branch_name=$(echo ${GITHUB_REF#refs/heads/})
+        git diff
+        git config --local user.email "${{ secrets.SECRET_PAT }}@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        if [[ "$(git status --porcelain)" != "" ]]; then
+          git commit -m "Update intake.md based on checks"
+          git push https://${{ secrets.SECRET_PAT }}@github.com/${{ github.repository }} HEAD:$branch_name
+        fi
