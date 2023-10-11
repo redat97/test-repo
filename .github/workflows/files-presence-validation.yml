@@ -48,21 +48,61 @@ jobs:
 
     - name : Edit intake file
       run: |
-          if [[ -f "intake.md" ]]; then
-            sed -i 's/\* \[ \] \[Configure repository to our own internal standards\]/\* \[x\] \[Configure repository to our own internal standards\]/' intake.md
-          else
-            echo "intake.md does not exist, this step will be skipped. Refer to rel-dev-doc repo for intake template"
-          fi
-
-    - name: Pushing the changes to PR
-      run: |
-        branch_name=$(echo ${GITHUB_REF#refs/heads/})
-        echo $branch_name
-        git diff
-        git config --local user.email "tarzaltreda@gmail.com"
-        git config --local user.name "redat97"
-        git add -A
-        if [[ "$(git status --porcelain)" != "" ]]; then
-          git commit -m "Update intake.md based on checks"
-          echo "${{ secrets.SECRET_PAT }}" | git push --quiet https://github.com/${{ github.repository }} HEAD:$branch_name
+        if [[ -f "intake.md" ]]; then
+          sed -i 's/\* \[ \] \[Configure repository to our own internal standards\]/\* \[x\] \[Configure repository to our own internal standards\]/' intake.md
+        else
+          echo "intake.md does not exist, this step will be skipped. Refer to rel-dev-doc repo for intake template"
         fi
+
+    - name: Commit and push using Octokit
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.SECRET_PAT }}
+        script: |
+          const { owner, repo } = context.repo;
+          const path = "intake.md";
+          const message = "Update intake.md based on checks";
+          const content = await github.rest.repos.getContent({ owner, repo, path });
+          const newContent = Buffer.from(content.data.content, 'base64').toString() + "\nModified by GitHub Action!";
+
+          // Create the blob for the new content
+          const blob = await github.rest.git.createBlob({
+            owner,
+            repo,
+            content: newContent,
+            encoding: 'utf-8'
+          });
+
+          // Get the SHA for the current branch
+          const branch = await github.rest.repos.getBranch({ owner, repo, branch: context.ref.replace('refs/heads/', '') });
+          const branchSha = branch.data.commit.sha;
+
+          // Create a new tree
+          const tree = await github.rest.git.createTree({
+            owner,
+            repo,
+            base_tree: branchSha,
+            tree: [{
+              path: path,
+              mode: '100644',
+              type: 'blob',
+              sha: blob.data.sha
+            }]
+          });
+
+          // Create a new commit
+          const commit = await github.rest.git.createCommit({
+            owner,
+            repo,
+            message: message,
+            tree: tree.data.sha,
+            parents: [branchSha]
+          });
+
+          // Update the branch to point to the new commit
+          await github.rest.git.updateRef({
+            owner,
+            repo,
+            ref: context.ref,
+            sha: commit.data.sha
+          });
