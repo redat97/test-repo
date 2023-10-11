@@ -65,6 +65,9 @@ jobs:
           }
       if: always() # Run step even if previous steps fail.
 
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name : Edit intake file
       run: |
           if [[ -f "intake.md" ]]; then
