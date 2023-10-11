@@ -1,10 +1,14 @@
 name: Reusable workflow to check organization standards
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - '**.md'
 
 
 jobs:
   validate-name:
+    if: github.actor != 'github-actions[bot]' && github.actor != 'github-actions'
     runs-on: ubuntu-latest
     steps:
     - name: Check repository name
