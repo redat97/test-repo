@@ -68,12 +68,12 @@ jobs:
           const modifiedContent = fs.readFileSync('./intake.md', 'utf-8');
           const base64Content = Buffer.from(modifiedContent).toString('base64');
 
-          // Create the blob for the new content
+          // Create the blob for the modified content
           const blob = await github.rest.git.createBlob({
             owner,
             repo,
-            content: newContent,
-            encoding: 'utf-8'
+            content: base64Content,
+            encoding: 'base64'
           });
 
           // Get the SHA for the current branch
