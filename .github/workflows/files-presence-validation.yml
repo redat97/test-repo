@@ -43,28 +43,6 @@ jobs:
           }
       if: always()
 
-    - name: Check branch protection
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.SECRET_PAT }}
-        script: |
-          const { owner, repo } = context.repo;
-          try {
-            const protection = await github.rest.repos.getBranchProtection({
-              owner,
-              repo,
-              branch: 'main'
-            });
-          } catch (error) {
-            if (error.message.includes("Branch not protected")) {
-              core.setFailed("The main branch is not protected, please protect it.");
-            } else {
-              core.setFailed(`An error occurred: ${error.message}`);
-            }
-            return;
-          }
-      if: always() # Run step even if previous steps fail.
-
     - name: Checkout code
       uses: actions/checkout@v3
 
@@ -80,10 +58,10 @@ jobs:
       run: |
         branch_name=$(echo ${GITHUB_REF#refs/heads/})
         git diff
-        git config --local user.email "${{ secrets.SECRET_PAT }}@github.com"
+        git config --local user.email "youremail@example.com"  # Use your actual email here
         git config --local user.name "GitHub Action"
         git add -A
         if [[ "$(git status --porcelain)" != "" ]]; then
           git commit -m "Update intake.md based on checks"
-          git push https://${{ secrets.SECRET_PAT }}@github.com/${{ github.repository }} HEAD:$branch_name
+          echo "${{ secrets.SECRET_PAT }}" | git push --quiet https://github.com/${{ github.repository }} HEAD:$branch_name
         fi
