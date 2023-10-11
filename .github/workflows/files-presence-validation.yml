@@ -60,7 +60,7 @@ jobs:
         echo $branch_name
         git diff
         git config --local user.email "tarzaltreda@gmail.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.name "redat97"
         git add -A
         if [[ "$(git status --porcelain)" != "" ]]; then
           git commit -m "Update intake.md based on checks"
