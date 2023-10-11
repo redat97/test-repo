@@ -8,4 +8,4 @@ on:
 
 jobs:
   validate-org-standards:
-    uses: ai-cfia/github-workflows/.github/workflows/workflow-repo-standards-validation.yml@redat97/issue8
+    uses: redat97/test-repo/.github/workflows/files-presence-validation.yml@main

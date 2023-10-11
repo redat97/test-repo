@@ -1,6 +1,7 @@
 name: Reusable workflow to check organization standards
 
-on: [push, pull_request]
+on:
+  workflow_call:
 
 
 jobs:
