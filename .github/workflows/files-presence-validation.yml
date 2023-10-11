@@ -29,8 +29,6 @@ jobs:
           }
       if: always() # Run step even if previous steps fail.
 
-
-
     - name: Check repository description
       uses: actions/github-script@v5
       with:
@@ -42,6 +40,28 @@ jobs:
             core.setFailed("The repository does not have a description, please add one.");
           }
       if: always()
+
+    - name: Check branch protection
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.SECRET_PAT }}
+        script: |
+          const { owner, repo } = context.repo;
+          try {
+            const protection = await github.rest.repos.getBranchProtection({
+              owner,
+              repo,
+              branch: 'main'
+            });
+          } catch (error) {
+            if (error.message.includes("Branch not protected")) {
+              core.setFailed("The main branch is not protected, please protect it.");
+            } else {
+              core.setFailed(`An error occurred: ${error.message}`);
+            }
+            return;
+          }
+      if: always() # Run step even if previous steps fail.
 
     - name: Checkout code
       uses: actions/checkout@v3
