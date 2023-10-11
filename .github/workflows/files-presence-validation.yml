@@ -57,7 +57,7 @@ jobs:
     - name: Pushing the changes to PR
       run: |
         branch_name=$(echo ${GITHUB_REF#refs/heads/})
-        echo $branch_name "djioasjdioasno"
+        echo $branch_name
         git diff
         git config --local user.email "youremail@example.com"  # Use your actual email here
         git config --local user.name "GitHub Action"
