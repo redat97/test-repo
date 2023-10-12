@@ -12,7 +12,7 @@ jobs:
       - name: Read test file
         id: read-test
         run: |
-          content=$(cat test.py)
+          content=$(cat tests/test_main.py)
           echo "::set-output name=content::$content"
 
       - name: OpenAI ChatGPT Action
