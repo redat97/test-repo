@@ -12,7 +12,7 @@ jobs:
       - name: Read test file
         id: read-test
         run: |
-          echo "FILE_CONTENT=$(cat tests/test_main.py)" >> $GITHUB_ENV
+          echo "FILE_CONTENT=$(cat tests/test_main.py | base64)" >> $GITHUB_ENV
 
 
       - name: OpenAI ChatGPT Action
