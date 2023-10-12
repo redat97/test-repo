@@ -23,7 +23,7 @@ jobs:
         uses: cahaseler/openai-api@v1.0.0
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'Given the following Python unittest code, please provide a detailed description of the test(s) and their purpose in a markdown format suitable for documentation. Consider including the title, purpose, details, and example code in the description.          '
+          prompt: 'Given the following Python unittest code, please provide a detailed description of the test(s) and their purpose in a markdown format suitable for documentation. Consider including the title, purpose, details, and example code in the description. You response will be automaticly appended to the README.md so it is very important that you send back only the markdown code in your reponse.'
           input: '${{ steps.read-test.outputs.content }}'
           model: 'gpt-4'
           temperature: 1
@@ -33,6 +33,18 @@ jobs:
         run: |
           echo "Response: ${{ steps.gpt-response.outputs.completion }}"
 
-      - name: Append Response to Test File
-        run: |
-          echo "${{ steps.gpt-response.outputs.completion }}" >> README.md
+      - name: Overwrite file
+        uses: "DamianReeves/write-file-action@master"
+        with:
+          path: README.md
+          write-mode: overwrite
+          contents: |
+            console.log('${{ steps.gpt-response.outputs.completion }}')
+
+      - name: Commit & Push
+        uses: Andro999b/push@v1.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chat-gpt-branch
+          force: true
+          message: 'Overwritten by Github Actions - ${date}'
