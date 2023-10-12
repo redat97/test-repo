@@ -19,3 +19,4 @@ class TestFastAPIApp(unittest.TestCase):
 
         elapsed_time = time.time() - start_time
         self.assertTrue(elapsed_time < 0.200)
+        
