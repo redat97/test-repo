@@ -42,11 +42,11 @@ jobs:
           script: |
             const fs = require('fs');
             const { owner, repo } = context.repo;
-            const path = "intake.md";
+            const path = "README.md";
             const message = "automatic update from workflow";
 
-            // Read the modified intake.md content
-            const modifiedContent = fs.readFileSync('./intake.md', 'utf-8');
+            // Read the modified README.md content
+            const modifiedContent = fs.readFileSync('./README.md', 'utf-8');
             const base64Content = Buffer.from(modifiedContent).toString('base64');
 
             // Create the blob for the modified content
