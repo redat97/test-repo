@@ -16,6 +16,7 @@ jobs:
           echo "::set-output name=content::$content"
 
       - name: OpenAI ChatGPT Action
+        id: gpt-response
         uses: cahaseler/openai-api@v1.0.0
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
@@ -25,6 +26,10 @@ jobs:
           temperature: 1
           max_tokens: 200
 
+      - name: Print Response to Log
+        run: |
+          echo "Response: ${{ steps.gpt-response.outputs.completion }}"
+
       - name: Append Response to Test File
         run: |
-          echo "${{ steps.gpt-response.outputs.response }}" >> README.md
+          echo "${{ steps.gpt-response.outputs.completion }}" >> README.md
