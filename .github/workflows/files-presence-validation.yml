@@ -12,8 +12,11 @@ jobs:
       - name: Read test file
         id: read-test
         run: |
-          echo "FILE_CONTENT=$(cat tests/test_main.py | base64)" >> $GITHUB_ENV
-
+          content=$(cat tests/test_main.py)
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=content::$content"
 
       - name: OpenAI ChatGPT Action
         id: gpt-response
@@ -21,7 +24,7 @@ jobs:
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
           prompt: 'Given the following Python unittest code, please provide a detailed description of the test(s) and their purpose in a markdown format suitable for documentation. Consider including the title, purpose, details, and example code in the description.          '
-          input: '${{ env.FILE_CONTENT }}'
+          input: '${{ steps.read-test.outputs.content }}'
           model: 'gpt-4'
           temperature: 1
           max_tokens: 200
