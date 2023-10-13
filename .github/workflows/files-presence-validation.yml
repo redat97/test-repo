@@ -14,20 +14,30 @@ jobs:
       - name: Read test file
         id: read-test
         run: |
-          content=$(cat tests/test_main.py)
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=content::$content"
+          test_file=$(cat tests/test_main.py)
+          test_file="${test_file//'%'/'%25'}"
+          test_file="${test_file//$'\n'/'%0A'}"
+          test_file="${test_file//$'\r'/'%0D'}"
+          echo "::set-output name=test_file::$test_file"
+
+
+      - name: Read test file
+        id: read-readme
+        run: |
+          readme=$(cat README.md)
+          readme="${readme//'%'/'%25'}"
+          readme="${readme//$'\n'/'%0A'}"
+          readme="${readme//$'\r'/'%0D'}"
+          echo "::set-output name=readme::$readme"
 
       - name: OpenAI ChatGPT Action
         id: gpt-response
         uses: cahaseler/openai-api@v1.0.0
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'Given the following Python unittest code, please provide a detailed description of the test(s) and their purpose in a markdown format suitable for documentation. Consider including the title, purpose, details, and example code in the description. You response will be automaticly appended to the README.md so it is very important that you send back only the markdown code in your reponse.'
-          input: '${{ steps.read-test.outputs.content }}'
-          model: 'gpt-4'
+          prompt: 'I want you to act as a test documentation expert, your first job is to look at the content of the labeled [TEST-CODE]. Then, if the [README] is empty, generate a clean looking markdown code which includes a detailed description of each test as well as its purpose based on the test title and comment if there are any. You need to SEND BACK ONLY THE MARKDOWN CODE. In the case in which the [README] is not empty, you will add a detailed description of each MISSING test as well as its purpose and send back THE MARKDOWN CODE OF THE DESCRIPTION OF ONLY THE MISSING TEST VERY IMPORTANT.'
+          input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the README : ${{ steps.read-test.outputs.readme }}'
+          model: 'gpt-3'
           temperature: 1
           max_tokens: 200
 
