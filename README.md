@@ -18,3 +18,22 @@ The  class contains two test methods:  and .
 
     Example Code:
 
+# Test Documentation
+
+## TestFastAPIApp
+
+### test_read_root
+- Purpose: To test if the root endpoint (/) returns a 200 status code and contains the current_time key in the response json.
+- Steps:
+  1. Send a GET request to the root endpoint (/).
+  2. Check if the response status code is 200.
+  3. Check if the response json contains the key current_time.
+
+### test_query_performance
+- Purpose: To test the performance of the root endpoint (/) by measuring the elapsed time of the request.
+- Steps:
+  1. Start the timer.
+  2. Send a GET request to the root endpoint (/).
+  3. Check if the response status code is 200.
+  4. Calculate the elapsed time by subtracting the start time from the current time.
+  5. Check if the elapsed time is less than 0.200 seconds.
