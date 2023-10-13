@@ -37,3 +37,16 @@ The  class contains two test methods:  and .
   3. Check if the response status code is 200.
   4. Calculate the elapsed time by subtracting the start time from the current time.
   5. Check if the elapsed time is less than 0.200 seconds.
+The generated markdown code for the missing test description is as follows:
+
+create_jwt_tokenpython
+def test_creating_jwt_token() -> None:
+    token = create_jwt_token(
+        jwt_content={content: payload},
+        secret_key=secret,
+        expires_delta=timedelta(minutes=1),
+    )
+    parsed_payload = jwt.decode(token, secret, algorithms=[ALGORITHM])
+
+    assert parsed_payload[content] == payload
+create_jwt_tokenpayloadsecret
