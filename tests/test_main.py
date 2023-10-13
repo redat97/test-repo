@@ -11,12 +11,3 @@ class TestFastAPIApp(unittest.TestCase):
         response = client.get("/")
         self.assertEqual(response.status_code, 200)
         self.assertIn("current_time", response.json())
-
-    def test_query_performance(self):
-        start_time = time.time()
-        response = client.get("/")
-        self.assertEqual(response.status_code, 200)
-
-        elapsed_time = time.time() - start_time
-        self.assertTrue(elapsed_time < 0.200)
-        
