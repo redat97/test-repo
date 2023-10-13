@@ -37,7 +37,7 @@ jobs:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
           prompt: 'I want you to act as a test documentation expert, your first job is to look at the content of the labeled [TEST-CODE]. Then, if the [README] is empty, generate a clean looking markdown code which includes a detailed description of each test as well as its purpose based on the test title and comment if there are any. You need to SEND BACK ONLY THE MARKDOWN CODE. In the case in which the [README] is not empty, you will add a detailed description of each MISSING test as well as its purpose and send back THE MARKDOWN CODE OF THE DESCRIPTION OF ONLY THE MISSING TEST VERY IMPORTANT.'
           input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the README : ${{ steps.read-test.outputs.readme }}'
-          model: 'gpt-3'
+          model: 'gpt-3.5-turbo'
           temperature: 1
           max_tokens: 200
 
