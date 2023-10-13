@@ -21,7 +21,7 @@ class TestFastAPIApp(unittest.TestCase):
         self.assertTrue(elapsed_time < 0.200)
 
     def test_creating_jwt_token() -> None:
-    token = create_jwt_token(
+        token = create_jwt_token(
         jwt_content={"content": "payload"},
         secret_key="secret",
         expires_delta=timedelta(minutes=1),

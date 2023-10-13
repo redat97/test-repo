@@ -35,7 +35,7 @@ jobs:
         uses: cahaseler/openai-api@v1.0.0
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'I want you to act as a test documentation expert, your first job is to look at the content of the labeled [TEST-CODE]. Then, if the [README] is empty, generate a clean looking markdown code which includes a detailed description of each test as well as its purpose based on the test title and comment if there are any. You need to SEND BACK ONLY THE MARKDOWN CODE. In the case in which the [README] is not empty, you will add a detailed description of each MISSING test as well as its purpose and send back THE MARKDOWN CODE OF THE DESCRIPTION OF ONLY THE MISSING TEST VERY IMPORTANT.'
+          prompt: 'I want you to act as a test documentation expert, your first job is to look at the content of the labeled [TEST-CODE]. Then, if the [README] is empty, generate a clean looking markdown code which includes a detailed description of each test as well as its purpose based on the test title and comment if there are any. You need to SEND BACK ONLY THE MARKDOWN CODE. In the case in which the [README] is not empty, you will add a detailed description of what each MISSING test does and tests and send back ONLY THE MARKDOWN CODE OF ONLY THE MISSING TEST VERY IMPORTANT to append to the readMe file so no "The generated markdown code for the missing test description is as follows:". It also needs to fit the format of the other test description'
           input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the README : ${{ steps.read-test.outputs.readme }}'
           model: 'gpt-3.5-turbo'
           temperature: 1
