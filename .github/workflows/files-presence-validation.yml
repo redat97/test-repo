@@ -11,35 +11,49 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Read test file
+      - name: Read test files
         id: read-test
         run: |
-          test_file=$(cat tests/test_main.py)
-          test_file="${test_file//'%'/'%25'}"
-          test_file="${test_file//$'\n'/'%0A'}"
-          test_file="${test_file//$'\r'/'%0D'}"
+          test_file=""
+          for f in tests/test_*.py; do
+            filename=$(basename "$f")
+            content=$(cat "$f")
+            content="This test file is named $filename : $content"
+            content="${content//'%'/'%25'}"
+            content="${content//$'\n'/'%0A'}"
+            content="${content//$'\r'/'%0D'}"
+            test_file="${test_file}%0A$content"
+          done
           echo "::set-output name=test_file::$test_file"
 
 
-      - name: Read test file
+      - name: Read README file
         id: read-readme
         run: |
-          readme=$(cat README.md)
-          readme="${readme//'%'/'%25'}"
-          readme="${readme//$'\n'/'%0A'}"
-          readme="${readme//$'\r'/'%0D'}"
-          echo "::set-output name=readme::$readme"
+          if [[ -f "TESTING.md" ]]; then
+            testing=$(cat TESTING.md)
+            testing="${testing//'%'/'%25'}"
+            testing="${testing//$'\n'/'%0A'}"
+            testing="${testing//$'\r'/'%0D'}"
+            echo "::set-output name=testing::$testing"
+          else
+            echo "::set-output name=testing::No testing file exists, you will have to generate one"
+          fi
 
       - name: OpenAI ChatGPT Action
         id: gpt-response
         uses: cahaseler/openai-api@v1.0.0
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'I want you to act as a test documentation expert, your first job is to look at the content of the labeled [TEST-CODE]. Then, if the [README] is empty, generate a clean looking markdown code which includes a detailed description of each test as well as its purpose based on the test title and comment if there are any. You need to SEND BACK ONLY THE MARKDOWN CODE. In the case in which the [README] is not empty, you will add a detailed description of what each MISSING test does and tests and send back ONLY THE MARKDOWN CODE OF ONLY THE MISSING TEST VERY IMPORTANT to append to the readMe file so no "The generated markdown code for the missing test description is as follows:" or any extra test, only send back the markdown code. It also needs to fit the format of the other test description'
-          input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the README : ${{ steps.read-test.outputs.readme }}'
+          prompt: 'I want you to act as a test documentation expert, your first job is to look at the content of the labeled [TEST-CODE]. Then, if the statis of TESTING.md says its empty, generate a clean looking markdown code which includes a detailed description of each test as well as its purpose based on the test title, its name and comment if there are any. You need to SEND BACK ONLY THE MARKDOWN CODE. In the case in which the TESTING.md is not empty, you will add a detailed description of what each MISSING test does and tests and send back ONLY THE MARKDOWN CODE OF ONLY THE MISSING TEST VERY IMPORTANT to append to the TESTING.md file so no "The generated markdown code for the missing test description is as follows:" or any extra test, only send back the markdown code. It also needs to fit the format of the other test description'
+          input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the current status of TESTING.md : ${{ steps.read-test.outputs.readme }}'
           model: 'gpt-3.5-turbo'
           temperature: 1
           max_tokens: 200
+
+      - name : Print prompt to log
+        run: |
+          echo "'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the README : ${{ steps.read-test.outputs.readme }}'"
 
       - name: Print Response to Log
         run: |
