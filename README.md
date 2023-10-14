@@ -43,3 +43,16 @@ The generated markdown code for the missing test description is as follows:
 test_creating_jwt_token()create_jwt_tokenjwt_contentsecret_keyexpires_deltasecretALGORITHMtest_read_root()test_query_performance()
 
 Please note that this markdown code should be appended to the existing readme file without any additional headings or separators.
+The generated markdown code for the missing test description is as follows:
+
+test_creating_jwt_tokencreate_jwt_token{content: payload}secrettimedelta(minutes=1)create_jwt_tokenjwt.decodepython
+def test_creating_jwt_token() -> None:
+    token = create_jwt_token(
+        jwt_content={content: payload},
+        secret_key=secret,
+        expires_delta=timedelta(minutes=1),
+    )
+    parsed_payload = jwt.decode(token, secret, algorithms=[ALGORITHM])
+
+    assert parsed_payload[content] == payload
+
