@@ -56,3 +56,8 @@ def test_creating_jwt_token() -> None:
 
     assert parsed_payload[content] == payload
 
+The current content of the TESTING.md file is empty. I will generate a markdown code that includes detailed descriptions for each test based on the provided test code. Here is the generated markdown code:
+
+
+
+Please append this markdown code to the TESTING.md file.
