@@ -61,7 +61,7 @@ jobs:
 
       - name: Append Response to README
         run: |
-          echo "${{ steps.gpt-response.outputs.completion }}" >> README.md
+          echo '${{ steps.gpt-response.outputs.completion }}' >> README.md
 
       - name: Commit and push using Octokit
         uses: actions/github-script@v5
