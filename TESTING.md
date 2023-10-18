@@ -34,3 +34,30 @@ def test_decoding_fails_when_token_is_invalid():
 
 
 This is a general template. I can modify and extend it if you give me the specific Python test cases used in your  and  test files.
+# Test Documentation
+
+Note: The Python code for the tests is omitted in this documentation as it falls outside the scope of this document. The purpose here is to explain what each Python test is meant to do.
+
+## 
+
+This file contains test cases related to the authentication process of our application.
+
+### 
+  
+This test case is designed to assert that the login process is successful when the right credentials are provided. If the credentials are valid, the user should be logged in successfully, and the test will pass.
+
+### 
+
+This test case is designed to ensure that the login process fails when wrong credentials are provided. It is a measure to prevent unauthorized access. If the login process fails with wrong credentials, indicating the system's ability to prevent unauthorized access, the test will pass.
+
+## 
+
+This file tests the functionality related to decoding of JWT tokens that are passed from the clients.
+
+### 
+
+This test case checks if the JWT token decoding process works correctly when a valid token is provided. A valid token should return correct information, and should this happen as expected, this test case will pass.
+
+### 
+
+The purpose of this test case is to check if the JWT token decoding process fails as expected when an invalid token is provided. If the decoding process does not fulfill expected behavior with an invalid token, indicating the system's ability to prevent the processing of invalid JWT tokens, this test case will pass.
