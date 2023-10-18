@@ -17,19 +17,14 @@ jobs:
           test_file=""
           for f in tests/test_*.py; do
             filename=$(basename "$f")
-            content=$(cat << EOF
-            This test file is named $filename
-            EOF
-            )
-            content="This test file is named $filename : # $content"
+            content="This test file is named $filename : # This test file is named $filename"
             content="${content//'%'/'%25'}"
             content="${content//$'\n'/'%0A'}"
             content="${content//$'\r'/'%0D'}"
             test_file="${test_file}%0A$content"
           done
           echo "::set-output name=test_file::$test_file"
-
-
+          
       - name: Read TESTING file
         id: read-testing
         run: |
@@ -49,7 +44,7 @@ jobs:
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
           prompt: 'I want you to act as a documentation expert, you will be given some python tests and I want you to create a complete markdown documentation that explains each case amd the purpose of the test based on the test itself as well as its name. You will need to send back only the markdown code no additionnal information as you reponse will be automaticly pasted to the TESTING.md file which contains the informations for the tests'
-          input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the current status of TESTING.md : ${{ steps.read-test.outputs.testing }}'
+          input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the current status of TESTING.md : ${{ steps.read-testing.outputs.testing }}'
           model: 'gpt-4'
           temperature: 1
           max_tokens: 200
