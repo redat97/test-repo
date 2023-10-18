@@ -19,8 +19,7 @@ jobs:
             filename=$(basename "$f")
             content=$(cat << EOF
             This test file is named $filename
-            EOF
-            )
+            EOF)
             content="This test file is named $filename : # $content"
             content="${content//'%'/'%25'}"
             content="${content//$'\n'/'%0A'}"
