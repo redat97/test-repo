@@ -33,12 +33,18 @@ jobs:
           temperature: 1
           max_tokens: 200
 
+      - name : Print prompt to log
+        run: |
+          echo ${{ steps.read-markdown.outputs.content }}
+
       - name: Print Translated Content
         run: |
-          echo "Translated Content: ${{ steps.translate.outputs.completion }}"
+          echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
   
       - name: Save Translated Content to File
-        run: echo "${{ steps.translate.outputs.completion }}" > adr/translated_file.md
+        run: echo "${{ steps.gpt-response.outputs.completion }}" > adr/translated_file.md
+             echo "TRANSLATED_FILE=adr/translated_file.md" >> $GITHUB_ENV
+
 
       - name: Create New Branch and Push
         run: |
