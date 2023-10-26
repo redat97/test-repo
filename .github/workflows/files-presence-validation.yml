@@ -36,8 +36,11 @@ jobs:
       - name: Print Translated Content
         run: |
           echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
+
+      - name: Debugging Print Current Working Directory
+        run: pwd
   
-      - name: Append Response to README
+      - name: Append Response to file
         run: |
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
 
