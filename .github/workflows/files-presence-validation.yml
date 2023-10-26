@@ -28,9 +28,7 @@ jobs:
       - name: Read markdown file content
         id: read-markdown-file
         run: |
-          content=$(printf '%s' adr/007-code-hosting-platform.md)
-
-          # Escape %, \n, and \r characters for correct handling by GitHub Actions
+          content=$(cat adr/007-code-hosting-platform.md)
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
