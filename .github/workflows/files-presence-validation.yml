@@ -56,7 +56,8 @@ jobs:
         run: |
           git checkout -b new-branch-name
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
-          git add adr/translated.md
+          cd adr
+          git add translated.md
           git commit -m "Add translated.md"
           git push origin new-branch-name
         env:
