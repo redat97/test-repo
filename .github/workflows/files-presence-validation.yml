@@ -72,6 +72,7 @@ jobs:
             ---
             title: "Translate ${{ steps.read-markdown.outputs.file_name }} to French"
             ---
+            This is my description
 
       - name: List files
         run : ls
@@ -82,7 +83,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
         with:
           filename: issues_template.md
-          assignees: github-actions
 
 
       # - name: Create Pull Request
