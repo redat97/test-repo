@@ -6,6 +6,7 @@ on:
 jobs:
   process:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
     env:
       COMMIT_USER: ${{ github.event.pusher.name }}
 
