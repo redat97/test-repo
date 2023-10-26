@@ -64,8 +64,8 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
             GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
-          with:
-            filename: issues_template.md
+        with:
+          filename: issues_template.md
 
       - name: Get issue number
         id: issue-number
