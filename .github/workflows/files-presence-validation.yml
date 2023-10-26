@@ -71,6 +71,8 @@ jobs:
           content: |
             ---
             title: "Translate ${{ steps.read-markdown.outputs.file_name }} to French"
+            author: "github-actions"
+            description: "This issue was automaticly created from the running workflow to translate the file ${{ steps.read-markdown.outputs.file_name }} to French, a pull request will be oppened once the process is done and will be linked to this issue."
             ---
 
       - name: List files
