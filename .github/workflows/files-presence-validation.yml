@@ -71,11 +71,9 @@ jobs:
           content: |
             ---
             title: "Translate ${{ steps.read-markdown.outputs.file_name }} to French"
+            labels: "automatization"
             ---
-            This is my description
-
-      - name: List files
-        run : ls
+            This issue was automatically created by github-actions bot, a new translated file for ${{ steps.read-markdown.outputs.file_name }} will be created and commited and a new PR will be created to review the file.
 
       - name: Create issue
         uses: JasonEtco/create-an-issue@v2
@@ -85,16 +83,16 @@ jobs:
           filename: issues_template.md
 
 
-      # - name: Create Pull Request
-      #   uses: peter-evans/create-pull-request@v3
-      #   with:
-      #     token: ${{ secrets.SECRET_PAT }}
-      #     commit-message: Add translated.md
-      #     committer: GitHub <noreply@github.com>
-      #     author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-      #     signoff: false
-      #     branch: new-branch-name
-      #     delete-branch: true
-      #     title: 'New Translation: French'
-      #     body: 'This PR includes a translated file.'
-      #     draft: false
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.SECRET_PAT }}
+          commit-message: Add translated.md
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: new-branch-name
+          delete-branch: true
+          title: 'New Translation: French'
+          body: 'This PR includes a translated file.'
+          draft: false
