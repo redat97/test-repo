@@ -64,8 +64,12 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
       - name: Create issue template file
-        run: |
-          echo 'title: Translate ${{ steps.read-markdown.outputs.file_name }} to french' > issues_template.md
+        uses: 1arp/create-a-file-action@0.3
+        with:
+          path: 'src/'
+          file: issues_template.md
+          content: |
+            title: Translate ${{ steps.read-markdown.outputs.file_name }} to french
 
       - name: Create issue
         uses: JasonEtco/create-an-issue@v2
