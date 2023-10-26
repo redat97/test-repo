@@ -69,7 +69,9 @@ jobs:
           path: '.'
           file: issues_template.md
           content: |
-            title: Translate ${{ steps.read-markdown.outputs.file_name }} to french
+            ---
+            title: "Translate ${{ steps.read-markdown.outputs.file_name }} to French"
+            ---
 
       - name: List files
         run : ls
