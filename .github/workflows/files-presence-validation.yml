@@ -34,7 +34,7 @@ jobs:
         with:
           apiKey: ${{ secrets.OPENAI_API_KEY }}
           prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
-          input: adr/007-code-hosting-platform.md
+          input: 'adr/007-code-hosting-platform.md'
           model: 'gpt-4'
           temperature: 1
 
