@@ -33,10 +33,6 @@ jobs:
           temperature: 1
           max_tokens: 200
 
-      - name : Print prompt to log
-        run: |
-          echo ${{ steps.read-markdown.outputs.content }}
-
       - name: Print Translated Content
         run: |
           echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
