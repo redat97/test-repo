@@ -32,15 +32,10 @@ jobs:
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
-          
-          echo "::set-output name=content::$(cat << EOF
-          $content
-          EOF
-          )"
+          echo "::set-output name=content::$content"
 
       - name: Print markdown file
-        run:
-          echo ${{ steps.read-markdown-file.outputs.content }}
+        run: echo ${{ steps.read-markdown-file.outputs.content }}
 
       # - name: OpenAI ChatGPT Action
       #   id: gpt-response
