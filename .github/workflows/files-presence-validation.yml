@@ -21,16 +21,11 @@ jobs:
           file_path=$(find adr -type f -name '*.md')
           markdown_file=$(cat "$file_path")
           file_name=$(basename "$file_path")
+          adr_number=$(echo '007-code-hosting-platform' | cut -c1-3)
+
           echo "::set-output name=markdown_file::$markdown_file"
           echo "::set-output name=file_name::$file_name"
-
-      - name: Print file name
-        run: |
-          echo "commit user is ${{ steps.read-markdown.outputs.file_name }}"
-
-      - name: Print PR title
-        run: |
-          echo "PR title is ${{ github.event.pull_request.title }}"
+          echo "::set-output name=adr_number::$adr_number"
 
       # - name: OpenAI ChatGPT Action
       #   id: gpt-response
@@ -82,17 +77,23 @@ jobs:
         with:
           filename: issues_template.md
 
+      - name: Get issue number
+        id: issue-number
+        uses: micalevisk/last-issue-action@v2
+        with:
+          state: open
+          labels: automatization
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.SECRET_PAT }}
-          commit-message: Add translated.md
+          commit-message: Add FR_${{ steps.read-markdown.outputs.file_name }}
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: new-branch-name
+          branch: ${{steps.issue-number.outputs.issue-number}}/translate-adr-${{ steps.read-markdown.outputs.adr_number }}
           delete-branch: true
-          title: 'New Translation: French'
-          body: 'This PR includes a translated file.'
+          title: 'Fixes #${{steps.issue-number.outputs.issue-number}}: Translate ${{ steps.read-markdown.outputs.file_name }} to French '
+          body: 'This PR includes the translated file mentionned in issue #${{steps.issue-number.outputs.issue-number}}.'
           draft: false
