@@ -43,17 +43,20 @@ jobs:
       - name: Append Response to file
         run: |
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
+          ls -la
 
       - name: Set up Git
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Checkout Repository and Create New Branch
+      - name: Checkout New Branch and Append Response to README
         run: |
-          new_branch="translate-to-french-${GITHUB_SHA::8}"
-          git checkout -b $new_branch
-          echo "Switched to new branch $new_branch"
+          git checkout -b new-branch-name
+          echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
+          git add translated.md
+          git commit -m "Add translated.md"
+          git push origin new-branch-name
 
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
