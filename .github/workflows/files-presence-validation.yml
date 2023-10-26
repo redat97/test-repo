@@ -54,7 +54,7 @@ jobs:
 
       - name: Checkout New Branch and Append Response to README
         run: |
-          git checkout -b new-branch-name
+          git checkout -b new-branch-name-2
           cd adr
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
           git add translated.md
