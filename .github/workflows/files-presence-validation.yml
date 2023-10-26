@@ -27,15 +27,18 @@ jobs:
           echo "::set-output name=file_name::$file_name"
           echo "::set-output name=adr_number::$adr_number"
 
-      - name: OpenAI ChatGPT Action
-        id: gpt-response
-        uses: cahaseler/openai-api@v1.0.0
-        with:
-          apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
-          input: ${{ steps.read-markdown.outputs.markdown_file }}
-          model: 'gpt-4'
-          temperature: 1
+      - name: Print markdown file
+        run: echo ${{ steps.read-markdown.outputs.markdown_file }}
+
+      # - name: OpenAI ChatGPT Action
+      #   id: gpt-response
+      #   uses: cahaseler/openai-api@v1.0.0
+      #   with:
+      #     apiKey: ${{ secrets.OPENAI_API_KEY }}
+      #     prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
+      #     input: ${{ steps.read-markdown.outputs.markdown_file }}
+      #     model: 'gpt-4'
+      #     temperature: 1
 
       - name: Print Translated Content
         run: |
