@@ -1,7 +1,7 @@
 on:
   push:
-    paths:
-      - 'adr/**'
+    # paths:
+    #   - 'adr/**'
 
 jobs:
   process:
@@ -15,20 +15,23 @@ jobs:
         with:
           token: ${{ secrets.SECRET_PAT }}
 
-      - name: Read markdown files
-        id: read-markdown
-        run: |
-          file_path=$(find adr -type f -name '*.md')
-          markdown_file=$(cat "$file_path")
-          file_name=$(basename "$file_path")
-          adr_number=$(echo '007-code-hosting-platform' | cut -c1-3)
+      - name: List files
+        run: ls
 
-          echo "::set-output name=markdown_file::$markdown_file"
-          echo "::set-output name=file_name::$file_name"
-          echo "::set-output name=adr_number::$adr_number"
+      # - name: Read markdown files
+      #   id: read-markdown
+      #   run: |
+      #     file_path=$(find adr -type f -name '*.md')
+      #     markdown_file=$(cat "$file_path")
+      #     file_name=$(basename "$file_path")
+      #     adr_number=$(echo $file_name | cut -c1-3)
 
-      - name: Print markdown file
-        run: echo ${{ steps.read-markdown.outputs.markdown_file }}
+      #     echo "::set-output name=markdown_file::$markdown_file"
+      #     echo "::set-output name=file_name::$file_name"
+      #     echo "::set-output name=adr_number::$adr_number"
+
+      # - name: Print markdown file
+      #   run: echo ${{ steps.read-markdown.outputs.markdown_file }}
 
       # - name: OpenAI ChatGPT Action
       #   id: gpt-response
@@ -40,63 +43,63 @@ jobs:
       #     model: 'gpt-4'
       #     temperature: 1
 
-      - name: Print Translated Content
-        run: |
-          echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
+      # - name: Print Translated Content
+      #   run: |
+      #     echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
 
-      - name: Set up Git
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+      # - name: Set up Git
+      #   run: |
+      #     git config user.name "github-actions"
+      #     git config user.email "github-actions@github.com"
 
-      - name: Create issue template file
-        uses: 1arp/create-a-file-action@0.3
-        with:
-          path: '.'
-          file: issues_template.md
-          content: |
-            ---
-            title: "Translate ${{ steps.read-markdown.outputs.file_name }} to French"
-            labels: "automatization"
-            ---
-            This issue was automatically created by github-actions bot, a new translated file for ${{ steps.read-markdown.outputs.file_name }} will be created and commited and a new PR will be created to review the file.
+      # - name: Create issue template file
+      #   uses: 1arp/create-a-file-action@0.3
+      #   with:
+      #     path: '.'
+      #     file: issues_template.md
+      #     content: |
+      #       ---
+      #       title: "Translate ${{ steps.read-markdown.outputs.file_name }} to French"
+      #       labels: "automatization"
+      #       ---
+      #       This issue was automatically created by github-actions bot, a new translated file for ${{ steps.read-markdown.outputs.file_name }} will be created and commited and a new PR will be created to review the file.
 
-      - name: Create issue
-        uses: JasonEtco/create-an-issue@v2
-        env:
-            GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
-        with:
-          filename: issues_template.md
+      # - name: Create issue
+      #   uses: JasonEtco/create-an-issue@v2
+      #   env:
+      #       GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+      #   with:
+      #     filename: issues_template.md
 
-      - name: Get issue number
-        id: issue-number
-        uses: micalevisk/last-issue-action@v2
-        with:
-            state: open
-            labels: automatization
+      # - name: Get issue number
+      #   id: issue-number
+      #   uses: micalevisk/last-issue-action@v2
+      #   with:
+      #       state: open
+      #       labels: automatization
 
-      - name: Checkout New Branch and Append Response to README
-        run: |
-          git checkout -b ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown.outputs.adr_number }}
-          cd adr
-          echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown.outputs.file_name }}.md
-          git add FR_${{ steps.read-markdown.outputs.file_name }}.md
-          git commit -m "Add FR_${{ steps.read-markdown.outputs.file_name }}.md"
-          git push origin ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown.outputs.adr_number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+      # - name: Checkout New Branch and Append Response to README
+      #   run: |
+      #     git checkout -b ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown.outputs.adr_number }}
+      #     cd adr
+      #     echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown.outputs.file_name }}.md
+      #     git add FR_${{ steps.read-markdown.outputs.file_name }}.md
+      #     git commit -m "Add FR_${{ steps.read-markdown.outputs.file_name }}.md"
+      #     git push origin ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown.outputs.adr_number }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.SECRET_PAT }}
-          commit-message: Add FR_${{ steps.read-markdown.outputs.file_name }}
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: ${{steps.issue-number.outputs.issue-number}}/translate-adr-${{ steps.read-markdown.outputs.adr_number }}
-          delete-branch: true
-          title: 'Fixes #${{steps.issue-number.outputs.issue-number}}: Translate ${{ steps.read-markdown.outputs.file_name }} to French '
-          body: 'This PR includes the translated file mentionned in issue #${{steps.issue-number.outputs.issue-number}}.'
-          draft: false
-          reviewers: ${{ env.COMMIT_USER }}
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     token: ${{ secrets.SECRET_PAT }}
+      #     commit-message: Add FR_${{ steps.read-markdown.outputs.file_name }}
+      #     committer: GitHub <noreply@github.com>
+      #     author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+      #     signoff: false
+      #     branch: ${{steps.issue-number.outputs.issue-number}}/translate-adr-${{ steps.read-markdown.outputs.adr_number }}
+      #     delete-branch: true
+      #     title: 'Fixes #${{steps.issue-number.outputs.issue-number}}: Translate ${{ steps.read-markdown.outputs.file_name }} to French '
+      #     body: 'This PR includes the translated file mentionned in issue #${{steps.issue-number.outputs.issue-number}}.'
+      #     draft: false
+      #     reviewers: ${{ env.COMMIT_USER }}
