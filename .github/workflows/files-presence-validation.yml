@@ -35,7 +35,7 @@ jobs:
           echo "::set-output name=content::$content"
 
       - name: Print markdown file
-        run: echo ${{ steps.read-markdown-file.outputs.content }}
+        run: echo "${{ steps.read-markdown-file.outputs.content }}"
 
       # - name: OpenAI ChatGPT Action
       #   id: gpt-response
