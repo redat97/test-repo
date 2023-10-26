@@ -56,7 +56,7 @@ jobs:
         run: |
           git checkout -b new-branch-name
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
-          git add translated.md
+          git adr/translated.md
           git commit -m "Add translated.md"
           git push origin new-branch-name
         env:
@@ -70,7 +70,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: translated-branch
+          branch: new-branch-name
           delete-branch: true
           title: 'New Translation: French'
           body: 'This PR includes a translated file.'
