@@ -7,17 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COMMIT_USER: ${{ github.event.pusher.name }}
+      PR_NAME: ${{ github.event.pull_request.title }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.SECRET_PAT }}
-
-      - name: list files
-        run: |
-          cd adr
-          ls
 
       - name: Read markdown files
         id: read-markdown
@@ -32,6 +28,10 @@ jobs:
         run: |
           echo "commit user is ${{ steps.read-markdown.outputs.file_name }}"
 
+      - name: Print PR title
+        run: |
+          echo "PR title is ${{ github.event.pull_request.title }}"
+
       # - name: OpenAI ChatGPT Action
       #   id: gpt-response
       #   uses: cahaseler/openai-api@v1.0.0
@@ -43,30 +43,25 @@ jobs:
       #     temperature: 1
       #     max_tokens: 200
 
-      # - name: Print Translated Content
-      #   run: |
-      #     echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
-
-      # - name: Append Response to file
-      #   run: |
-      #     echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
-      #     ls -la
+      - name: Print Translated Content
+        run: |
+          echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
 
       # - name: Set up Git
       #   run: |
       #     git config user.name "github-actions"
       #     git config user.email "github-actions@github.com"
 
-      # - name: Checkout New Branch and Append Response to README
-      #   run: |
-      #     git checkout -b new-branch-name-2
-      #     cd adr
-      #     echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
-      #     git add translated.md
-      #     git commit -m "Add translated.md"
-      #     git push origin new-branch-name-2
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+      - name: Checkout New Branch and Append Response to README
+        run: |
+          git checkout -b new-branch-name-2
+          cd adr
+          echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown.outputs.file_name }}.md
+          git add FR_${{ steps.read-markdown.outputs.file_name }}.md
+          git commit -m "Add FR_${{ steps.read-markdown.outputs.file_name }}.md"
+          git push origin new-branch-name-2
+        env:
+          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
       # - name: Create Pull Request
       #   uses: peter-evans/create-pull-request@v3
