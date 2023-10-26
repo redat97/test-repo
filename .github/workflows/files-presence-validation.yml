@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.SECRET_PAT }}
           
       - name: Read markdown files
         id: read-markdown
