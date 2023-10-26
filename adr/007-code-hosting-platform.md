@@ -124,5 +124,3 @@ The decision to use GitHub will help the CFIA's AI Lab reach, it will get more p
 [CompareCamp * BitBucket Review: Pricing, Pros, Cons & Features](https://comparecamp.com/bitbucket-review-pricing-pros-cons-features/)
 
 [Capterra * Bitbucket Reviews 2023](https://www.capterra.com/p/166497/Bitbucket/reviews/)
-
-[https://about.gitlab.com/customers/iron-mountain/](https://about.gitlab.com/customers/iron-mountain/)
