@@ -5,77 +5,80 @@ on:
 jobs:
   process:
     runs-on: ubuntu-latest
+    env:
+      COMMIT_USER: ${{ github.event.pusher.name }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.SECRET_PAT }}
-          
-      - name: Read markdown files
-        id: read-markdown
+
+      - name: Print commit user
         run: |
-          content=""
-          for f in adr/*.md; do
-            content="$content$(cat "$f")\n"
-          done
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=content::$content"
-      
-      - name: OpenAI ChatGPT Action
-        id: gpt-response
-        uses: cahaseler/openai-api@v1.0.0
-        with:
-          apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
-          input: ${{ steps.read-markdown.outputs.content }}
-          model: 'gpt-4'
-          temperature: 1
-          max_tokens: 200
+          echo "commit user is : ${{ env.COMMIT_USER }}"
 
-      - name: Print Translated Content
-        run: |
-          echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
+      # - name: Read markdown files
+      #   id: read-markdown
+      #   run: |
+      #     content=""
+      #     for f in adr/*.md; do
+      #       content="$content$(cat "$f")\n"
+      #     done
+      #     content="${content//'%'/'%25'}"
+      #     content="${content//$'\n'/'%0A'}"
+      #     content="${content//$'\r'/'%0D'}"
+      #     echo "::set-output name=content::$content"
 
-      - name: Debugging Print Current Working Directory
-        run: pwd
-  
-      - name: Append Response to file
-        run: |
-          echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
-          ls -la
+      # - name: OpenAI ChatGPT Action
+      #   id: gpt-response
+      #   uses: cahaseler/openai-api@v1.0.0
+      #   with:
+      #     apiKey: ${{ secrets.OPENAI_API_KEY }}
+      #     prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
+      #     input: ${{ steps.read-markdown.outputs.content }}
+      #     model: 'gpt-4'
+      #     temperature: 1
+      #     max_tokens: 200
 
-      - name: Set up Git
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+      # - name: Print Translated Content
+      #   run: |
+      #     echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
 
-      - name: Checkout New Branch and Append Response to README
-        run: |
-          git checkout -b new-branch-name-2
-          cd adr
-          echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
-          git add translated.md
-          git commit -m "Add translated.md"
-          git push origin new-branch-name-2
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+      # - name: Debugging Print Current Working Directory
+      #   run: pwd
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.SECRET_PAT }}
-          commit-message: Add translated.md
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: new-branch-name
-          delete-branch: true
-          title: 'New Translation: French'
-          body: 'This PR includes a translated file.'
-          draft: false
-        
+      # - name: Append Response to file
+      #   run: |
+      #     echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
+      #     ls -la
 
-      
+      # - name: Set up Git
+      #   run: |
+      #     git config user.name "github-actions"
+      #     git config user.email "github-actions@github.com"
+
+      # - name: Checkout New Branch and Append Response to README
+      #   run: |
+      #     git checkout -b new-branch-name-2
+      #     cd adr
+      #     echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
+      #     git add translated.md
+      #     git commit -m "Add translated.md"
+      #     git push origin new-branch-name-2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     token: ${{ secrets.SECRET_PAT }}
+      #     commit-message: Add translated.md
+      #     committer: GitHub <noreply@github.com>
+      #     author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+      #     signoff: false
+      #     branch: new-branch-name
+      #     delete-branch: true
+      #     title: 'New Translation: French'
+      #     body: 'This PR includes a translated file.'
+      #     draft: false
