@@ -14,21 +14,19 @@ jobs:
         with:
           token: ${{ secrets.SECRET_PAT }}
 
-      - name: Print commit user
+      - name: Read markdown files
+        id: read-markdown
         run: |
-          echo "commit user is : ${{ env.COMMIT_USER }}"
+          content=""
+          file_path=(find adr -type f -name '*.md')
+          content="$content$(cat "$file_path")\n"
+          file_name="$(basename "$file_path")"
+          echo "::set-output name=content::$content"
+          echo "::set-output name=file_name::$file_name"
 
-      # - name: Read markdown files
-      #   id: read-markdown
-      #   run: |
-      #     content=""
-      #     for f in adr/*.md; do
-      #       content="$content$(cat "$f")\n"
-      #     done
-      #     content="${content//'%'/'%25'}"
-      #     content="${content//$'\n'/'%0A'}"
-      #     content="${content//$'\r'/'%0D'}"
-      #     echo "::set-output name=content::$content"
+      - name: Print file name
+        run: |
+          echo "commit user is ${{ steps.read-markdown.outputs.file_name }}"
 
       # - name: OpenAI ChatGPT Action
       #   id: gpt-response
@@ -44,9 +42,6 @@ jobs:
       # - name: Print Translated Content
       #   run: |
       #     echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
-
-      # - name: Debugging Print Current Working Directory
-      #   run: pwd
 
       # - name: Append Response to file
       #   run: |
