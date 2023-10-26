@@ -3,7 +3,6 @@ on:
     paths:
       - 'adr/**'
 
-
 jobs:
   process:
     runs-on: ubuntu-latest
@@ -37,7 +36,6 @@ jobs:
           input: ${{ steps.read-markdown.outputs.markdown_file }}
           model: 'gpt-4'
           temperature: 1
-          max_tokens: 200
 
       - name: Print Translated Content
         run: |
