@@ -14,10 +14,13 @@ jobs:
         with:
           token: ${{ secrets.SECRET_PAT }}
 
+      - name: list files
+        run: |
+          ls
+
       - name: Read markdown files
         id: read-markdown
         run: |
-          content=""
           file_path=(find adr -type f -name '*.md')
           content="$content$(cat "$file_path")\n"
           file_name="$(basename "$file_path")"
