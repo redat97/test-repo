@@ -66,10 +66,13 @@ jobs:
       - name: Create issue template file
         uses: 1arp/create-a-file-action@0.3
         with:
-          path: 'src/'
+          path: '.'
           file: issues_template.md
           content: |
             title: Translate ${{ steps.read-markdown.outputs.file_name }} to french
+
+      - name: List files
+        run : ls
 
       - name: Create issue
         uses: JasonEtco/create-an-issue@v2
