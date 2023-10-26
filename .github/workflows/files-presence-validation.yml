@@ -41,14 +41,16 @@ jobs:
         run: |
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
 
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-      - name: Create New Branch and Push
+      - name: Checkout Repository and Create New Branch
         run: |
           new_branch="translate-to-french-${GITHUB_SHA::8}"
           git checkout -b $new_branch
-          git commit -m "Translate markdown file to French"
-          git push origin $new_branch
-          echo "NEW_BRANCH=$new_branch" >> $GITHUB_ENV
+          echo "Switched to new branch $new_branch"
 
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
