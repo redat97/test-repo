@@ -16,6 +16,7 @@ jobs:
 
       - name: list files
         run: |
+          cd adr
           ls
 
       - name: Read markdown files
