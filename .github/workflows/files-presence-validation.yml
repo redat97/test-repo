@@ -76,12 +76,12 @@ jobs:
 
       - name: Checkout New Branch and Append Response to README
         run: |
-          git checkout -b new-branch-name-2
+          git checkout -b ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown.outputs.adr_number }}
           cd adr
           echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown.outputs.file_name }}.md
           git add FR_${{ steps.read-markdown.outputs.file_name }}.md
           git commit -m "Add FR_${{ steps.read-markdown.outputs.file_name }}.md"
-          git push origin new-branch-name-2
+          git push origin ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown.outputs.adr_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
