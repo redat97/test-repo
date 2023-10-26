@@ -37,16 +37,15 @@ jobs:
         run: |
           echo "Translated Content: ${{ steps.gpt-response.outputs.completion }}"
   
-      - name: Save Translated Content to File
-        run: echo "${{ steps.gpt-response.outputs.completion }}" > adr/translated_file.md
-             echo "TRANSLATED_FILE=adr/translated_file.md" >> $GITHUB_ENV
+      - name: Append Response to README
+        run: |
+          echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
 
 
       - name: Create New Branch and Push
         run: |
           new_branch="translate-to-french-${GITHUB_SHA::8}"
           git checkout -b $new_branch
-          git add ${{ env.TRANSLATED_FILE }}
           git commit -m "Translate markdown file to French"
           git push origin $new_branch
           echo "NEW_BRANCH=$new_branch" >> $GITHUB_ENV
