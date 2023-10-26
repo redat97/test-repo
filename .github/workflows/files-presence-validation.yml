@@ -57,12 +57,13 @@ jobs:
           git add translated.md
           git commit -m "Add translated.md"
           git push origin new-branch-name
+        env:
+          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: ${{ env.NEW_BRANCH }}
+          github_token: ${{ secrets.SECRET_PAT }}
           destination_branch: "main"  # or the branch you want to merge into
           pr_title: "Translate Markdown to French"
           pr_body: "This PR contains a translated markdown file."
