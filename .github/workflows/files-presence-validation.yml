@@ -48,17 +48,6 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Checkout New Branch and Append Response to README
-        run: |
-          git checkout -b new-branch-name-2
-          cd adr
-          echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown.outputs.file_name }}.md
-          git add FR_${{ steps.read-markdown.outputs.file_name }}.md
-          git commit -m "Add FR_${{ steps.read-markdown.outputs.file_name }}.md"
-          git push origin new-branch-name-2
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
-
       - name: Create issue template file
         uses: 1arp/create-a-file-action@0.3
         with:
@@ -74,16 +63,27 @@ jobs:
       - name: Create issue
         uses: JasonEtco/create-an-issue@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
-        with:
-          filename: issues_template.md
+            GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+          with:
+            filename: issues_template.md
 
       - name: Get issue number
         id: issue-number
         uses: micalevisk/last-issue-action@v2
         with:
-          state: open
-          labels: automatization
+            state: open
+            labels: automatization
+
+      - name: Checkout New Branch and Append Response to README
+        run: |
+          git checkout -b new-branch-name-2
+          cd adr
+          echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown.outputs.file_name }}.md
+          git add FR_${{ steps.read-markdown.outputs.file_name }}.md
+          git commit -m "Add FR_${{ steps.read-markdown.outputs.file_name }}.md"
+          git push origin new-branch-name-2
+        env:
+          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
