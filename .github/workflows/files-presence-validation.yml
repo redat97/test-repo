@@ -59,7 +59,7 @@ jobs:
           echo "${{ steps.gpt-response.outputs.completion }}" >> translated.md
           git add translated.md
           git commit -m "Add translated.md"
-          git push origin new-branch-name
+          git push origin new-branch-name-2
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
 
