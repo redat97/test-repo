@@ -100,11 +100,12 @@ jobs:
           token: ${{ secrets.SECRET_PAT }}
           commit-message: Add FR_${{ steps.read-markdown-title.outputs.file_name }}
           committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          author: github-actions[bot]
           signoff: false
           branch: ${{steps.issue-number.outputs.issue-number}}/translate-adr-${{ steps.read-markdown-title.outputs.adr_number }}
           delete-branch: true
           title: 'Fixes #${{steps.issue-number.outputs.issue-number}}: Translate ${{ steps.read-markdown-title.outputs.file_name }} to French '
           body: 'This PR includes the translated file mentionned in issue #${{steps.issue-number.outputs.issue-number}}.'
           draft: false
+          labels: automatization
           reviewers: ${{ env.COMMIT_USER }}
