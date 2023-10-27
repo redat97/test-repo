@@ -7,6 +7,9 @@ jobs:
   process:
     runs-on: ubuntu-latest
     if: github.actor != 'github-actions[bot]'
+    permissions:
+      contents: write
+      issues: write
     env:
       COMMIT_USER: ${{ github.event.pusher.name }}
 
@@ -14,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.SECRET_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Read markdown files title
         id: read-markdown-title
@@ -72,7 +75,7 @@ jobs:
       - name: Create issue
         uses: JasonEtco/create-an-issue@v2
         env:
-            GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           filename: issues_template.md
 
@@ -92,7 +95,7 @@ jobs:
           git commit -m "Add FR_${{ steps.read-markdown-title.outputs.file_name }}.md"
           git push origin ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown-title.outputs.adr_number }}
         env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
@@ -100,12 +103,11 @@ jobs:
           token: ${{ secrets.SECRET_PAT }}
           commit-message: Add FR_${{ steps.read-markdown-title.outputs.file_name }}
           committer: GitHub <noreply@github.com>
-          author: github-actions[bot]
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: ${{steps.issue-number.outputs.issue-number}}/translate-adr-${{ steps.read-markdown-title.outputs.adr_number }}
           delete-branch: true
           title: 'Fixes #${{steps.issue-number.outputs.issue-number}}: Translate ${{ steps.read-markdown-title.outputs.file_name }} to French '
           body: 'This PR includes the translated file mentionned in issue #${{steps.issue-number.outputs.issue-number}}.'
           draft: false
-          labels: automatization
           reviewers: ${{ env.COMMIT_USER }}
