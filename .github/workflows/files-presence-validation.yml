@@ -3,7 +3,7 @@ on:
     branches:
       - main
     paths:
-      - 'adr/007-code-hosting-platform.md'
+      - 'adr/*.md'
 
 jobs:
   process:
