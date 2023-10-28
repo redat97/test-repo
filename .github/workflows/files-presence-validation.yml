@@ -35,7 +35,7 @@ jobs:
       - name: Read markdown file content
         id: read-markdown-file
         run: |
-          content=$(cat adr/007-code-hosting-platform.md)
+          content=$(cat adr/*.md)
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
