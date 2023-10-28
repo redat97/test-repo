@@ -93,7 +93,7 @@ jobs:
         run: |
           git checkout -b ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown-title.outputs.adr_number }}
           cd adr
-          echo "{{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown-title.outputs.file_name }}.md
+          echo "${{ steps.gpt-response.outputs.completion }}" >> FR_${{ steps.read-markdown-title.outputs.file_name }}.md
           git add FR_${{ steps.read-markdown-title.outputs.file_name }}.md
           git commit -m "Add FR_${{ steps.read-markdown-title.outputs.file_name }}.md"
           git push origin ${{steps.issue-number.outputs.issue-number}}-translate-adr-${{ steps.read-markdown-title.outputs.adr_number }}
