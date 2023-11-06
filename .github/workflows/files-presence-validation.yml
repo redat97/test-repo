@@ -1,118 +1,118 @@
-on:
-  push:
-    paths-ignore:
-      - '**.md'
+# on:
+#   push:
+#     paths-ignore:
+#       - '**.md'
 
-jobs:
-  process:
-    runs-on: ubuntu-latest
+# jobs:
+#   process:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      - name: Read test files
-        id: read-test
-        run: |
-          test_file=""
-          for f in tests/test_*.py; do
-            filename=$(basename "$f")
-            content="This test file is named $filename : # This test file is named $filename"
-            content="${content//'%'/'%25'}"
-            content="${content//$'\n'/'%0A'}"
-            content="${content//$'\r'/'%0D'}"
-            test_file="${test_file}%0A$content"
-          done
-          echo "::set-output name=test_file::$test_file"
-          
-      - name: Read TESTING file
-        id: read-testing
-        run: |
-          if [[ -f "TESTING.md" ]]; then
-            testing=$(cat TESTING.md)
-            testing="${testing//'%'/'%25'}"
-            testing="${testing//$'\n'/'%0A'}"
-            testing="${testing//$'\r'/'%0D'}"
-            echo "::set-output name=testing::$testing"
-          else
-            echo "::set-output name=testing::No testing file exists, you will have to generate one"
-          fi
+#       - name: Read test files
+#         id: read-test
+#         run: |
+#           test_file=""
+#           for f in tests/test_*.py; do
+#             filename=$(basename "$f")
+#             content="This test file is named $filename : # This test file is named $filename"
+#             content="${content//'%'/'%25'}"
+#             content="${content//$'\n'/'%0A'}"
+#             content="${content//$'\r'/'%0D'}"
+#             test_file="${test_file}%0A$content"
+#           done
+#           echo "::set-output name=test_file::$test_file"
 
-      - name: OpenAI ChatGPT Action
-        id: gpt-response
-        uses: cahaseler/openai-api@v1.0.0
-        with:
-          apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'I want you to act as a documentation expert, you will be given some python tests and I want you to create a complete markdown documentation that explains each case amd the purpose of the test based on the test itself as well as its name. You will need to send back only the markdown code no additionnal information as you reponse will be automaticly pasted to the TESTING.md file which contains the informations for the tests'
-          input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the current status of TESTING.md : ${{ steps.read-testing.outputs.testing }}'
-          model: 'gpt-4'
-          temperature: 1
-          max_tokens: 200
+#       - name: Read TESTING file
+#         id: read-testing
+#         run: |
+#           if [[ -f "TESTING.md" ]]; then
+#             testing=$(cat TESTING.md)
+#             testing="${testing//'%'/'%25'}"
+#             testing="${testing//$'\n'/'%0A'}"
+#             testing="${testing//$'\r'/'%0D'}"
+#             echo "::set-output name=testing::$testing"
+#           else
+#             echo "::set-output name=testing::No testing file exists, you will have to generate one"
+#           fi
 
-      - name : Print prompt to log
-        run: |
-          echo "'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}"
+#       - name: OpenAI ChatGPT Action
+#         id: gpt-response
+#         uses: cahaseler/openai-api@v1.0.0
+#         with:
+#           apiKey: ${{ secrets.OPENAI_API_KEY }}
+#           prompt: 'I want you to act as a documentation expert, you will be given some python tests and I want you to create a complete markdown documentation that explains each case amd the purpose of the test based on the test itself as well as its name. You will need to send back only the markdown code no additionnal information as you reponse will be automaticly pasted to the TESTING.md file which contains the informations for the tests'
+#           input: 'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}; This is the current status of TESTING.md : ${{ steps.read-testing.outputs.testing }}'
+#           model: 'gpt-4'
+#           temperature: 1
+#           max_tokens: 200
 
-      - name: Print Response to Log
-        run: |
-          echo "Response: ${{ steps.gpt-response.outputs.completion }}"
+#       - name : Print prompt to log
+#         run: |
+#           echo "'This is the TEST-CODE : ${{ steps.read-test.outputs.test_file }}"
 
-      - name: Append Response to README
-        run: |
-          echo "${{ steps.gpt-response.outputs.completion }}" >> TESTING.md
+#       - name: Print Response to Log
+#         run: |
+#           echo "Response: ${{ steps.gpt-response.outputs.completion }}"
 
-      - name: Commit and push using Octokit
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.SECRET_PAT }}
-          script: |
-            const fs = require('fs');
-            const { owner, repo } = context.repo;
-            const path = "TESTING.md";
-            const message = "automatic update from workflow";
+#       - name: Append Response to README
+#         run: |
+#           echo "${{ steps.gpt-response.outputs.completion }}" >> TESTING.md
 
-            // Read the modified TESTING.md content
-            const modifiedContent = fs.readFileSync('./TESTING.md', 'utf-8');
-            const base64Content = Buffer.from(modifiedContent).toString('base64');
+#       - name: Commit and push using Octokit
+#         uses: actions/github-script@v5
+#         with:
+#           github-token: ${{ secrets.SECRET_PAT }}
+#           script: |
+#             const fs = require('fs');
+#             const { owner, repo } = context.repo;
+#             const path = "TESTING.md";
+#             const message = "automatic update from workflow";
 
-            // Create the blob for the modified content
-            const blob = await github.rest.git.createBlob({
-              owner,
-              repo,
-              content: base64Content,
-              encoding: 'base64'
-            });
+#             // Read the modified TESTING.md content
+#             const modifiedContent = fs.readFileSync('./TESTING.md', 'utf-8');
+#             const base64Content = Buffer.from(modifiedContent).toString('base64');
 
-            // Get the SHA for the current branch
-            const branch = await github.rest.repos.getBranch({ owner, repo, branch: context.ref.replace('refs/heads/', '') });
-            const branchSha = branch.data.commit.sha;
+#             // Create the blob for the modified content
+#             const blob = await github.rest.git.createBlob({
+#               owner,
+#               repo,
+#               content: base64Content,
+#               encoding: 'base64'
+#             });
 
-            // Create a new tree
-            const tree = await github.rest.git.createTree({
-              owner,
-              repo,
-              base_tree: branchSha,
-              tree: [{
-                path: path,
-                mode: '100644',
-                type: 'blob',
-                sha: blob.data.sha
-              }]
-            });
+#             // Get the SHA for the current branch
+#             const branch = await github.rest.repos.getBranch({ owner, repo, branch: context.ref.replace('refs/heads/', '') });
+#             const branchSha = branch.data.commit.sha;
 
-            // Create a new commit
-            const commit = await github.rest.git.createCommit({
-              owner,
-              repo,
-              message: message,
-              tree: tree.data.sha,
-              parents: [branchSha]
-            });
+#             // Create a new tree
+#             const tree = await github.rest.git.createTree({
+#               owner,
+#               repo,
+#               base_tree: branchSha,
+#               tree: [{
+#                 path: path,
+#                 mode: '100644',
+#                 type: 'blob',
+#                 sha: blob.data.sha
+#               }]
+#             });
 
-            // Update the branch to point to the new commit
-            await github.rest.git.updateRef({
-              owner,
-              repo,
-              ref: 'heads/' + context.ref.replace('refs/heads/', ''),
-              sha: commit.data.sha
-            });
+#             // Create a new commit
+#             const commit = await github.rest.git.createCommit({
+#               owner,
+#               repo,
+#               message: message,
+#               tree: tree.data.sha,
+#               parents: [branchSha]
+#             });
+
+#             // Update the branch to point to the new commit
+#             await github.rest.git.updateRef({
+#               owner,
+#               repo,
+#               ref: 'heads/' + context.ref.replace('refs/heads/', ''),
+#               sha: commit.data.sha
+#             });
