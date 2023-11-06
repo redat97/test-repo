@@ -43,15 +43,19 @@ jobs:
       - name: Print markdown file
         run: echo "${{ steps.read-markdown-file.outputs.content }}"
 
-      - name: OpenAI ChatGPT Action
+      # - name: OpenAI ChatGPT Action
+      #   id: gpt-response
+      #   uses: cahaseler/openai-api@v1.0.0
+      #   with:
+      #     apiKey: ${{ secrets.OPENAI_API_KEY }}
+      #     prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
+      #     input: 'adr/007-code-hosting-platform.md'
+      #     model: 'gpt-4'
+      #     temperature: 1
+
+      - name: Set Manual Output
         id: gpt-response
-        uses: cahaseler/openai-api@v1.0.0
-        with:
-          apiKey: ${{ secrets.OPENAI_API_KEY }}
-          prompt: 'Please translate the following English text to French, preserving all markdown formatting and structure exactly as it is. It is very important to send back only the markdown code as the response will be directly appended to the file:'
-          input: 'adr/007-code-hosting-platform.md'
-          model: 'gpt-4'
-          temperature: 1
+        run: echo "::set-output name=completion::This is a manually set translation for testing purposes."
 
       - name: Print Translated Content
         run: |
