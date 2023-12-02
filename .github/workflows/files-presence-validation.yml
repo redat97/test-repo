@@ -1,15 +1,16 @@
-name: ChatGPT Review
+name: GPT Review
 
-on: [pull_request]
+on:
+  pull_request:
 
 jobs:
-  chatgpt-review:
-    name: ChatGPT Review
+  review:
     runs-on: ubuntu-latest
     steps:
-    - uses: redat97/ChatGPT-Reviewer@main
-      name: ChatGPT Review
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
+      - uses: actions/checkout@v2
+      
+      - uses: gpt-review@v1
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          model: davinci
+          question: 'How can this code be improved?'
