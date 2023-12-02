@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
-      - uses: gpt-review@v1
+
+      - name: GPT Review
+        uses: gpt-review@v1 # Replace with the correct action reference
         with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }} # Replace with your secret name
           model: davinci
           question: 'How can this code be improved?'
